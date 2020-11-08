@@ -32,12 +32,9 @@ const Ingredients = () => {
 		sendRequest,
 		reqExtra,
 		reqIdentifier,
+		clear,
 	} = useHttp();
 	const [userIngredients, dispatch] = useReducer(ingredientReducer, []);
-
-	// const [userIngredients, setUserIngredients] = useState([]);
-	// const [isLoading, setIsLoading] = useState(false);
-	// const [error, setError] = useState();
 
 	useEffect(() => {
 		if (!isLoading && !error && reqIdentifier === "REMOVE_INGREDIENT") {
@@ -55,39 +52,18 @@ const Ingredients = () => {
 		dispatch({ type: "SET", ingredients: filteredIngredients });
 	}, []);
 
-	const addIngredientHandler = useCallback((ingredient) => {
-		sendRequest(
-			"https://react-hooks-update-4b02e.firebaseio.com/ingredients.json",
-			"POST",
-			JSON.stringify(ingredient),
-			ingredient,
-			"ADD_INGREDIENT"
-		);
-		// dispatchHttp({ type: "SEND" });
-		// fetch(
-		// 	"https://react-hooks-update-4b02e.firebaseio.com/ingredients.json",
-		// 	{
-		// 		method: "POST",
-		// 		body: JSON.stringify(ingredient),
-		// 		headers: { "Content-Type": "application/json" },
-		// 	}
-		// )
-		// 	.then((response) => {
-		// 		dispatchHttp({ type: "RESPONSE" });
-		// 		return response.json();
-		// 	})
-		// 	.then((data) => {
-		// 		console.log("data", data);
-		// 		// setUserIngredients((prevIngredients) => [
-		// 		// 	...prevIngredients,
-		// 		// 	{ id: data.name, ...ingredient },
-		// 		// ]);
-		// 		dispatch({
-		// 			type: "ADD",
-		// 			ingredient: { id: data.name, ...ingredient },
-		// 		});
-		// 	});
-	}, []);
+	const addIngredientHandler = useCallback(
+		(ingredient) => {
+			sendRequest(
+				"https://react-hooks-update-4b02e.firebaseio.com/ingredients.json",
+				"POST",
+				JSON.stringify(ingredient),
+				ingredient,
+				"ADD_INGREDIENT"
+			);
+		},
+		[sendRequest]
+	);
 
 	const removeIngredientHandler = useCallback(
 		(ingredientId) => {
@@ -102,10 +78,6 @@ const Ingredients = () => {
 		[sendRequest]
 	);
 
-	const clearError = useCallback(() => {
-		// dispatchHttp({ type: "CLEAR" });
-	}, []);
-
 	const ingredientList = useMemo(() => {
 		return (
 			<IngredientList
@@ -117,7 +89,7 @@ const Ingredients = () => {
 
 	return (
 		<div className="App">
-			{error && <ErrorModal onClose={clearError}>{error}</ErrorModal>}
+			{error && <ErrorModal onClose={clear}>{error}</ErrorModal>}
 			<IngredientForm
 				onAddIngredint={addIngredientHandler}
 				isLoading={isLoading}
